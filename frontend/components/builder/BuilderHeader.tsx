@@ -34,7 +34,7 @@ export const BuilderHeader: React.FC<BuilderHeaderProps> = ({
 
   const handlePreview = () => {
     // Open the respondent view in a new tab
-    window.open(`/forms/${formId}`, '_blank');
+    window.open(`/f/${formId}`, '_blank');
   };
 
   return (

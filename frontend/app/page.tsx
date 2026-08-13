@@ -139,7 +139,7 @@ export default function DashboardPage() {
   };
 
   const handleNavigateToResponses = (id: number) => {
-    toast.info(`Responses Dashboard (Step 5) for Form #${id} is coming soon!`);
+    router.push(`/forms/${id}/responses`);
   };
 
   // Filter forms based on search query
