@@ -21,6 +21,7 @@ import LivePreview from '@/components/builder/LivePreview';
 import QuestionTypePicker from '@/components/builder/QuestionTypePicker';
 import { useToast } from '@/components/ui/Toast';
 import { Loader2 } from 'lucide-react';
+import RespondentFormFlow from '@/components/respondent/RespondentFormFlow';
 
 interface BuilderPageProps {
   params: Promise<{ id: string }>;
@@ -38,6 +39,7 @@ export default function BuilderPage({ params }: BuilderPageProps) {
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -263,6 +265,7 @@ export default function BuilderPage({ params }: BuilderPageProps) {
         isSaving={isSaving}
         status={form.status}
         onPublishToggle={handlePublishToggle}
+        onPreview={() => setPreviewOpen(true)}
       />
 
       {/* Split Builder Panels */}
@@ -296,6 +299,22 @@ export default function BuilderPage({ params }: BuilderPageProps) {
         onClose={() => setPickerOpen(false)}
         onSelectType={handleAddQuestion}
       />
+
+      {/* Interactive Live Preview overlay */}
+      {previewOpen && (
+        <div className="fixed inset-0 z-50 bg-white flex flex-col animate-fade-in">
+          <RespondentFormFlow
+            questions={questions}
+            formTitle={form.title}
+            onSubmit={async () => {
+              // Local preview only: resolve immediately without API write
+              return;
+            }}
+            isSubmitLoading={false}
+            onClose={() => setPreviewOpen(false)}
+          />
+        </div>
+      )}
 
     </div>
   );

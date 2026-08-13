@@ -20,6 +20,7 @@ interface BuilderHeaderProps {
   isSaving: boolean;
   status: 'draft' | 'published';
   onPublishToggle: () => void;
+  onPreview: () => void;
 }
 
 export const BuilderHeader: React.FC<BuilderHeaderProps> = ({
@@ -28,13 +29,13 @@ export const BuilderHeader: React.FC<BuilderHeaderProps> = ({
   isSaving,
   status,
   onPublishToggle,
+  onPreview,
 }) => {
   const router = useRouter();
   const isPublished = status === 'published';
 
   const handlePreview = () => {
-    // Open the respondent view in a new tab
-    window.open(`/f/${formId}`, '_blank');
+    onPreview();
   };
 
   return (
