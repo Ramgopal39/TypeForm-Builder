@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Plus, 
@@ -29,6 +30,7 @@ import { useToast } from '@/components/ui/Toast';
 import Button from '@/components/ui/Button';
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [forms, setForms] = useState<FormItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -133,7 +135,7 @@ export default function DashboardPage() {
   };
 
   const handleNavigateToBuilder = (id: number) => {
-    toast.info(`Form Builder (Step 4) for Form #${id} is coming next!`);
+    router.push(`/forms/${id}/builder`);
   };
 
   const handleNavigateToResponses = (id: number) => {

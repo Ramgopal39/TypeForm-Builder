@@ -14,6 +14,23 @@ export interface HealthResponse {
   status: string;
 }
 
+export interface QuestionItem {
+  id: number;
+  form_id: number;
+  type: string;
+  title: string;
+  description?: string;
+  required: boolean;
+  position: number;
+  settings?: Record<string, any> | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface FormDetailResponse extends FormItem {
+  questions: QuestionItem[];
+}
+
 export const getHealthStatus = async (): Promise<HealthResponse> => {
   const response = await api.get<HealthResponse>('/health');
   return response.data;
@@ -22,6 +39,11 @@ export const getHealthStatus = async (): Promise<HealthResponse> => {
 // Form API Operations
 export const getForms = async (): Promise<FormItem[]> => {
   const response = await api.get<FormItem[]>('/forms');
+  return response.data;
+};
+
+export const getFormDetails = async (id: number): Promise<FormDetailResponse> => {
+  const response = await api.get<FormDetailResponse>(`/forms/${id}`);
   return response.data;
 };
 
@@ -54,5 +76,39 @@ export const publishForm = async (id: number): Promise<FormItem> => {
 
 export const unpublishForm = async (id: number): Promise<FormItem> => {
   const response = await api.post<FormItem>(`/forms/${id}/unpublish`);
+  return response.data;
+};
+
+// Question API Operations
+export const getFormQuestions = async (formId: number): Promise<QuestionItem[]> => {
+  const response = await api.get<QuestionItem[]>(`/forms/${formId}/questions`);
+  return response.data;
+};
+
+export const createQuestion = async (
+  formId: number,
+  data: { type: string; title: string; required?: boolean; position?: number; settings?: Record<string, any> | null }
+): Promise<QuestionItem> => {
+  const response = await api.post<QuestionItem>(`/forms/${formId}/questions`, data);
+  return response.data;
+};
+
+export const updateQuestion = async (
+  id: number,
+  data: { type?: string; title?: string; description?: string; required?: boolean; position?: number; settings?: Record<string, any> | null }
+): Promise<QuestionItem> => {
+  const response = await api.put<QuestionItem>(`/questions/${id}`, data);
+  return response.data;
+};
+
+export const deleteQuestion = async (id: number): Promise<void> => {
+  await api.delete(`/questions/${id}`);
+};
+
+export const reorderQuestions = async (
+  formId: number,
+  reorders: { id: number; position: number }[]
+): Promise<QuestionItem[]> => {
+  const response = await api.put<QuestionItem[]>(`/forms/${formId}/questions/reorder`, reorders);
   return response.data;
 };
