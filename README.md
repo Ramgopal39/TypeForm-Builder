@@ -67,6 +67,17 @@ python -m uvicorn app.main:app --reload --port 8000
 *   **Interactive Docs (Swagger UI)**: `http://127.0.0.1:8000/docs`
 *   **Health Check**: `http://127.0.0.1:8000/api/health`
 
+### 1.1 Database Seeding
+
+To populate the database with polished, high-fidelity sample forms and mock responses (including Customer Feedback, Job Application, and Event Registration surveys), run the following command from the `backend/` directory:
+
+```bash
+# Make sure your virtual environment is active
+python -m app.seed
+```
+
+This seed script is fully idempotent and safe to execute repeatedly. Running it will refresh the seed forms without duplicating records.
+
 ### 2. Frontend Setup (Next.js)
 
 Navigate to the `frontend/` directory, install dependencies, and run the development script:
