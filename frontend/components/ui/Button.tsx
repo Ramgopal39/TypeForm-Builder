@@ -23,13 +23,13 @@ export const Button: React.FC<ButtonProps> = ({
   disabled,
   ...props
 }) => {
-  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 focus:ring-indigo-500 disabled:opacity-50 disabled:pointer-events-none cursor-pointer';
+  const baseStyles = 'inline-flex items-center justify-center font-semibold rounded-xl transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 disabled:opacity-50 disabled:pointer-events-none cursor-pointer';
   
   const variants = {
-    primary: 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/20 border border-transparent',
-    secondary: 'bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700/50',
-    outline: 'bg-transparent hover:bg-slate-900 text-slate-300 hover:text-white border border-slate-800 hover:border-slate-700',
-    danger: 'bg-rose-600 hover:bg-rose-500 text-white shadow-lg shadow-rose-600/20 border border-transparent',
+    primary: 'bg-slate-900 hover:bg-slate-800 text-white shadow-sm border border-transparent',
+    secondary: 'bg-slate-100 hover:bg-slate-200 text-slate-800 border border-transparent',
+    outline: 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 focus:ring-slate-200',
+    danger: 'bg-rose-50 hover:bg-rose-100/80 text-rose-600 border border-rose-200',
   };
 
   const sizes = {

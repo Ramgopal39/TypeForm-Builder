@@ -196,23 +196,23 @@ export default function DashboardPage() {
             
             {/* Quick Metrics */}
             <div className="flex items-center gap-3">
-              <div className="bg-white border border-slate-100 rounded-xl px-4 py-2 flex items-center gap-3 shadow-[0_1px_3px_rgba(0,0,0,0.01)]">
-                <div className="h-8 w-8 rounded-lg bg-indigo-50 flex items-center justify-center">
-                  <TrendingUp className="h-4 w-4 text-indigo-500" />
+              <div className="bg-white border border-slate-150 rounded-xl px-4 py-2 flex items-center gap-3 shadow-sm select-none">
+                <div className="h-8 w-8 rounded-lg bg-slate-50 border border-slate-150 flex items-center justify-center">
+                  <TrendingUp className="h-4 w-4 text-slate-700" />
                 </div>
                 <div className="flex flex-col">
                   <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider leading-none">Total Forms</span>
-                  <span className="text-sm font-semibold text-slate-800 mt-1 leading-none">{forms.length}</span>
+                  <span className="text-sm font-bold text-slate-800 mt-1 leading-none">{forms.length}</span>
                 </div>
               </div>
 
-              <div className="bg-white border border-slate-100 rounded-xl px-4 py-2 flex items-center gap-3 shadow-[0_1px_3px_rgba(0,0,0,0.01)]">
-                <div className="h-8 w-8 rounded-lg bg-emerald-50 flex items-center justify-center">
-                  <Award className="h-4 w-4 text-emerald-500" />
+              <div className="bg-white border border-slate-150 rounded-xl px-4 py-2 flex items-center gap-3 shadow-sm select-none">
+                <div className="h-8 w-8 rounded-lg bg-slate-50 border border-slate-150 flex items-center justify-center">
+                  <Award className="h-4 w-4 text-slate-700" />
                 </div>
                 <div className="flex flex-col">
                   <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider leading-none">Responses</span>
-                  <span className="text-sm font-semibold text-slate-800 mt-1 leading-none">
+                  <span className="text-sm font-bold text-slate-800 mt-1 leading-none">
                     {forms.reduce((acc, curr) => acc + curr.response_count, 0)}
                   </span>
                 </div>

@@ -44,14 +44,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab = 'forms' }) => {
       <nav className="flex-1 px-3 py-6 flex flex-col gap-1">
         {menuItems.map((item) => {
           const Icon = item.icon;
-          const isActive = item.id === currentTab;
+          const isActive = 
+            item.id.toLowerCase() === currentTab.toLowerCase() ||
+            item.label.toLowerCase() === currentTab.toLowerCase();
           return (
             <button
               key={item.id}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
                 isActive 
-                  ? 'bg-slate-50 text-slate-900' 
-                  : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50/50'
+                  ? 'bg-slate-100 text-slate-900' 
+                  : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50/60'
               }`}
             >
               <Icon className={`h-4 w-4 ${isActive ? 'text-slate-900' : 'text-slate-400'}`} />
