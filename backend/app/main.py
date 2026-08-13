@@ -20,10 +20,13 @@ app.add_middleware(
 
 # Include routers
 app.include_router(health.router, prefix="/api", tags=["System"])
+<<<<<<< HEAD
 from app.routers import forms, questions, responses
 app.include_router(forms.router, prefix="/api")
 app.include_router(questions.router, prefix="/api")
 app.include_router(responses.router, prefix="/api")
+=======
+>>>>>>> 46ce72d0812837a242c11f170b5d4226fcaeb42d
 
 if __name__ == "__main__":
     import uvicorn

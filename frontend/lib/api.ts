@@ -1,5 +1,8 @@
 import axios from 'axios';
+<<<<<<< HEAD
 import { FormItem } from '@/components/dashboard/FormCard';
+=======
+>>>>>>> 46ce72d0812837a242c11f170b5d4226fcaeb42d
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
 
@@ -14,6 +17,7 @@ export interface HealthResponse {
   status: string;
 }
 
+<<<<<<< HEAD
 export interface QuestionItem {
   id: number;
   form_id: number;
@@ -31,10 +35,13 @@ export interface FormDetailResponse extends FormItem {
   questions: QuestionItem[];
 }
 
+=======
+>>>>>>> 46ce72d0812837a242c11f170b5d4226fcaeb42d
 export const getHealthStatus = async (): Promise<HealthResponse> => {
   const response = await api.get<HealthResponse>('/health');
   return response.data;
 };
+<<<<<<< HEAD
 
 // Form API Operations
 export const getForms = async (): Promise<FormItem[]> => {
@@ -112,3 +119,5 @@ export const reorderQuestions = async (
   const response = await api.put<QuestionItem[]>(`/forms/${formId}/questions/reorder`, reorders);
   return response.data;
 };
+=======
+>>>>>>> 46ce72d0812837a242c11f170b5d4226fcaeb42d

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import datetime
 from app.database import engine, Base, SessionLocal
 from app.models import Form, Question, Response, ResponseAnswer
@@ -134,6 +135,11 @@ def seed_db():
         raise e
     finally:
         db.close()
+=======
+def seed_db():
+    """Seed initial data into the database."""
+    print("Database seeding utility initialized. No initial data seeded yet.")
+>>>>>>> 46ce72d0812837a242c11f170b5d4226fcaeb42d
 
 if __name__ == "__main__":
     seed_db()
