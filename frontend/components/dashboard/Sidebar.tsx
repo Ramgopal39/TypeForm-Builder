@@ -1,6 +1,8 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
+import { useToast } from '@/components/ui/Toast';
 import { 
   FileText, 
   Settings, 
@@ -17,6 +19,9 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ currentTab = 'forms' }) => {
+  const router = useRouter();
+  const toast = useToast();
+
   const menuItems = [
     { id: 'forms', label: 'My Workspace', icon: FolderClosed },
     { id: 'templates', label: 'Templates', icon: LayoutTemplate },
@@ -50,6 +55,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab = 'forms' }) => {
           return (
             <button
               key={item.id}
+              onClick={() => {
+                if (item.id === 'forms') {
+                  router.push('/');
+                } else if (item.id === 'templates') {
+                  toast.info('Templates library is coming soon! Start by creating a blank form.');
+                } else if (item.id === 'responses') {
+                  toast.info('Select a form from your workspace and click "View Responses" to analyze analytics.');
+                } else if (item.id === 'settings') {
+                  toast.info('Workspace settings are coming soon.');
+                }
+              }}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
                 isActive 
                   ? 'bg-slate-100 text-slate-900' 
