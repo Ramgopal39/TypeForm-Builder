@@ -1,6 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import health
+from app.database import engine, Base
+
+# Create all tables on startup (ensures schemas are created)
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Typeform Builder API", version="1.0.0")
 
@@ -21,7 +25,8 @@ app.add_middleware(
 # Include routers
 app.include_router(health.router, prefix="/api", tags=["System"])
 
-from app.routers import forms, questions, responses
+from app.routers import forms, questions, responses, auth
+app.include_router(auth.router, prefix="/api")
 app.include_router(forms.router, prefix="/api")
 app.include_router(questions.router, prefix="/api")
 app.include_router(responses.router, prefix="/api")

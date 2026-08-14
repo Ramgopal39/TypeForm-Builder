@@ -1,3 +1,3 @@
-from app.models.models import Form, Question, Response, ResponseAnswer
+from app.models.models import Form, Question, Response, ResponseAnswer, User, UserSession
 
-__all__ = ["Form", "Question", "Response", "ResponseAnswer"]
+__all__ = ["Form", "Question", "Response", "ResponseAnswer", "User", "UserSession"]

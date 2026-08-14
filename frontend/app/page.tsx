@@ -52,7 +52,12 @@ export default function DashboardPage() {
       // Sort forms by updated_at descending by default
       data.sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
       setForms(data);
-    } catch (err) {
+    } catch (err: any) {
+      if (err.response?.status === 401) {
+        localStorage.removeItem('auth_token');
+        router.push('/login');
+        return;
+      }
       toast.error('Failed to load forms from backend.');
     } finally {
       setLoading(false);
@@ -60,8 +65,15 @@ export default function DashboardPage() {
   };
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('auth_token');
+      if (!token) {
+        router.push('/login');
+        return;
+      }
+    }
     fetchFormsData();
-  }, []);
+  }, [router]);
 
   const handleCreateForm = async (title: string, description: string) => {
     setModalLoading(true);

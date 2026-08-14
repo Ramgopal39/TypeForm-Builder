@@ -45,6 +45,14 @@ export default function ResponsesPage({ params }: ResponsesPageProps) {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('auth_token');
+      if (!token) {
+        router.push('/login');
+        return;
+      }
+    }
+
     const loadData = async () => {
       try {
         const [formDetails, responsesData] = await Promise.all([
@@ -54,14 +62,19 @@ export default function ResponsesPage({ params }: ResponsesPageProps) {
         setForm(formDetails);
         setQuestions(formDetails.questions);
         setResponses(responsesData);
-      } catch (err) {
+      } catch (err: any) {
+        if (err.response?.status === 401) {
+          localStorage.removeItem('auth_token');
+          router.push('/login');
+          return;
+        }
         toast.error('Failed to load responses data.');
       } finally {
         setLoading(false);
       }
     };
     loadData();
-  }, [formId]);
+  }, [formId, router]);
 
   const handleSelectResponse = (res: FormResponseItem) => {
     setSelectedResponse(res);

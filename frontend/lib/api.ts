@@ -10,6 +10,29 @@ export const api = axios.create({
   },
 });
 
+// Interceptor to attach Authorization header dynamically
+api.interceptors.request.use((config) => {
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('auth_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+  }
+  return config;
+});
+
+export interface UserItem {
+  id: number;
+  email: string;
+  name: string;
+  created_at: string;
+}
+
+export interface AuthResponse {
+  token: string;
+  user: UserItem;
+}
+
 export interface HealthResponse {
   status: string;
 }
@@ -143,4 +166,23 @@ export const exportResponsesCSV = async (formId: number): Promise<Blob> => {
     responseType: 'blob',
   });
   return response.data;
+};
+
+export const loginUser = async (data: Record<string, string>): Promise<AuthResponse> => {
+  const response = await api.post<AuthResponse>('/auth/login', data);
+  return response.data;
+};
+
+export const signupUser = async (data: Record<string, string>): Promise<AuthResponse> => {
+  const response = await api.post<AuthResponse>('/auth/signup', data);
+  return response.data;
+};
+
+export const getCurrentUser = async (): Promise<UserItem> => {
+  const response = await api.get<UserItem>('/auth/me');
+  return response.data;
+};
+
+export const logoutUser = async (): Promise<void> => {
+  await api.post('/auth/logout');
 };

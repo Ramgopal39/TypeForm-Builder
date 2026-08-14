@@ -45,6 +45,14 @@ export default function BuilderPage({ params }: BuilderPageProps) {
 
   // Load form details and its questions on mount
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('auth_token');
+      if (!token) {
+        router.push('/login');
+        return;
+      }
+    }
+
     const loadData = async () => {
       try {
         const formDetails = await getFormDetails(formId);
@@ -58,7 +66,12 @@ export default function BuilderPage({ params }: BuilderPageProps) {
         if (sortedQuestions.length > 0) {
           setActiveQuestionId(sortedQuestions[0].id);
         }
-      } catch (err) {
+      } catch (err: any) {
+        if (err.response?.status === 401) {
+          localStorage.removeItem('auth_token');
+          router.push('/login');
+          return;
+        }
         toast.error('Failed to load form details from API.');
         router.push('/');
       } finally {

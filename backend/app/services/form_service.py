@@ -4,8 +4,11 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from app.models import Form, Question
 
-def get_forms(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(Form).offset(skip).limit(limit).all()
+def get_forms(db: Session, user_id: int = None, skip: int = 0, limit: int = 100):
+    query = db.query(Form)
+    if user_id is not None:
+        query = query.filter(Form.user_id == user_id)
+    return query.offset(skip).limit(limit).all()
 
 def get_form_by_id(db: Session, form_id: int):
     form = db.query(Form).filter(Form.id == form_id).first()
@@ -16,8 +19,8 @@ def get_form_by_id(db: Session, form_id: int):
         )
     return form
 
-def create_form(db: Session, form_title: str, form_description: str = None):
-    new_form = Form(title=form_title, description=form_description, status="draft")
+def create_form(db: Session, form_title: str, form_description: str = None, user_id: int = None):
+    new_form = Form(title=form_title, description=form_description, status="draft", user_id=user_id)
     db.add(new_form)
     db.commit()
     db.refresh(new_form)
@@ -58,7 +61,7 @@ def publish_form(db: Session, form_id: int):
 def unpublish_form(db: Session, form_id: int):
     return update_form(db, form_id, status_str="draft")
 
-def duplicate_form(db: Session, form_id: int):
+def duplicate_form(db: Session, form_id: int, user_id: int = None):
     # Fetch original form
     original_form = get_form_by_id(db, form_id)
     
@@ -66,7 +69,8 @@ def duplicate_form(db: Session, form_id: int):
     duplicated_form = Form(
         title=f"Copy of {original_form.title}",
         description=original_form.description,
-        status="draft"
+        status="draft",
+        user_id=user_id or original_form.user_id
     )
     db.add(duplicated_form)
     db.flush()  # Generates duplicated_form.id inside transaction

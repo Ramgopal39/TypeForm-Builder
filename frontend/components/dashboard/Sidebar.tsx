@@ -1,10 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/Toast';
+import { logoutUser } from '@/lib/api';
 import { 
-  FileText, 
   Settings, 
   LayoutTemplate, 
   BarChart3, 
@@ -21,6 +21,39 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({ currentTab = 'forms' }) => {
   const router = useRouter();
   const toast = useToast();
+  const [name, setName] = useState('John Doe');
+  const [email, setEmail] = useState('john@example.com');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedName = localStorage.getItem('user_name');
+      const storedEmail = localStorage.getItem('user_email');
+      if (storedName) setName(storedName);
+      if (storedEmail) setEmail(storedEmail);
+    }
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+    } catch (e) {
+      // Ignore API failure during logout (could be expired token)
+    }
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('user_name');
+    localStorage.removeItem('user_email');
+    toast.success('Logged out successfully.');
+    router.push('/login');
+  };
+
+  const getInitials = (fullName: string) => {
+    return fullName
+      .split(' ')
+      .map((part) => part[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2) || 'JD';
+  };
 
   const menuItems = [
     { id: 'forms', label: 'My Workspace', icon: FolderClosed },
@@ -90,13 +123,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab = 'forms' }) => {
         
         <div className="flex items-center gap-3">
           <div className="h-8 w-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-xs font-bold text-slate-600 font-mono">
-            JD
+            {getInitials(name)}
           </div>
           <div className="flex flex-col overflow-hidden">
-            <span className="text-xs font-semibold text-slate-800 leading-none truncate">John Doe</span>
-            <span className="text-[10px] text-slate-400 font-medium truncate mt-0.5">john@example.com</span>
+            <span className="text-xs font-semibold text-slate-800 leading-none truncate">{name}</span>
+            <span className="text-[10px] text-slate-400 font-medium truncate mt-0.5">{email}</span>
           </div>
-          <button className="ml-auto text-slate-400 hover:text-slate-600 transition p-1 hover:bg-slate-50 rounded-lg">
+          <button 
+            onClick={handleLogout}
+            title="Log out"
+            className="ml-auto text-slate-400 hover:text-red-500 hover:bg-red-50 transition p-1.5 rounded-lg"
+          >
             <LogOut className="h-3.5 w-3.5" />
           </button>
         </div>

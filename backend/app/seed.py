@@ -1,6 +1,7 @@
 import datetime
 from app.database import engine, Base, SessionLocal
-from app.models import Form, Question, Response, ResponseAnswer
+from app.models import Form, Question, Response, ResponseAnswer, User
+from app.routers.auth import hash_password, generate_salt
 
 def seed_db():
     print("Initializing database seeding...")
@@ -10,6 +11,21 @@ def seed_db():
     
     db = SessionLocal()
     try:
+        # Check if default user exists
+        default_user = db.query(User).filter(User.email == "john@example.com").first()
+        if not default_user:
+            print("Creating default user 'john@example.com' with password 'password123'...")
+            salt = generate_salt()
+            hashed_pwd = hash_password("password123", salt)
+            default_user = User(
+                email="john@example.com",
+                hashed_password=hashed_pwd,
+                salt=salt,
+                name="John Doe"
+            )
+            db.add(default_user)
+            db.flush()
+
         # Delete existing forms with the same titles to maintain idempotency
         target_titles = ["Customer Feedback", "Job Application", "Event Registration"]
         existing_forms = db.query(Form).filter(Form.title.in_(target_titles)).all()
@@ -25,7 +41,8 @@ def seed_db():
             title="Customer Feedback",
             description="We value your opinion. Help us improve our product.",
             status="published",
-            published_at=datetime.datetime.now(datetime.timezone.utc)
+            published_at=datetime.datetime.now(datetime.timezone.utc),
+            user_id=default_user.id
         )
         db.add(form1)
         db.flush()
@@ -35,7 +52,8 @@ def seed_db():
             title="Job Application",
             description="Apply for our SDE role. Please fill out your details.",
             status="published",
-            published_at=datetime.datetime.now(datetime.timezone.utc)
+            published_at=datetime.datetime.now(datetime.timezone.utc),
+            user_id=default_user.id
         )
         db.add(form2)
         db.flush()
@@ -44,7 +62,8 @@ def seed_db():
         form3 = Form(
             title="Event Registration",
             description="Register for our upcoming builder conference.",
-            status="draft"
+            status="draft",
+            user_id=default_user.id
         )
         db.add(form3)
         db.flush()
