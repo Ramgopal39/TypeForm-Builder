@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { 
   getFormDetails, 
   getFormResponses, 
+  exportResponsesCSV,
   FormDetailResponse, 
   FormResponseItem, 
   QuestionItem 
@@ -67,27 +68,11 @@ export default function ResponsesPage({ params }: ResponsesPageProps) {
     setIsDetailOpen(true);
   };
 
-  const handleExportCSV = () => {
+  const handleExportCSV = async () => {
     if (responses.length === 0 || !form) return;
 
     try {
-      // Build CSV headers
-      const sortedQuestions = [...questions].sort((a, b) => a.position - b.position);
-      const headers = ['Submission Date', ...sortedQuestions.map((q) => `"${q.title.replace(/"/g, '""')}"`)];
-      
-      // Build CSV rows
-      const rows = responses.map((res) => {
-        const dateStr = new Date(res.submitted_at).toLocaleString();
-        const rowAnswers = sortedQuestions.map((q) => {
-          const answer = res.answers.find((a) => a.question_id === q.id);
-          const val = answer ? answer.value : '';
-          return `"${val.replace(/"/g, '""')}"`;
-        });
-        return [dateStr, ...rowAnswers].join(',');
-      });
-
-      const csvContent = [headers.join(','), ...rows].join('\n');
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const blob = await exportResponsesCSV(formId);
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.setAttribute('href', url);

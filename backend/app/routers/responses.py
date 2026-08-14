@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, Response
 # pyrefly: ignore [missing-import]
 from sqlalchemy.orm import Session
 from typing import List
@@ -11,6 +11,15 @@ router = APIRouter(tags=["Responses"])
 @router.get("/forms/{id}/responses", response_model=List[schemas.ResponseDetailResponse])
 def read_form_responses(id: int, db: Session = Depends(get_db)):
     return services.get_responses_by_form(db, form_id=id)
+
+@router.get("/forms/{id}/responses/csv")
+def export_form_responses_csv(id: int, db: Session = Depends(get_db)):
+    csv_content = services.generate_responses_csv(db, form_id=id)
+    headers = {
+        'Content-Disposition': f'attachment; filename="responses_form_{id}.csv"',
+        'Access-Control-Expose-Headers': 'Content-Disposition'
+    }
+    return Response(content=csv_content, media_type="text/csv", headers=headers)
 
 @router.get("/responses/{id}", response_model=schemas.ResponseDetailResponse)
 def read_response(id: int, db: Session = Depends(get_db)):

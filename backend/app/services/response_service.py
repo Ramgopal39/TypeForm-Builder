@@ -106,3 +106,43 @@ def submit_response(db: Session, form_id: int, answers_data: List[ResponseAnswer
     db.commit()
     db.refresh(new_response)
     return new_response
+
+def generate_responses_csv(db: Session, form_id: int) -> str:
+    import csv
+    import io
+    
+    # Verify form exists
+    form = db.query(Form).filter(Form.id == form_id).first()
+    if not form:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Form with ID {form_id} not found."
+        )
+    
+    # Get questions sorted by position
+    questions = db.query(Question).filter(Question.form_id == form_id).order_by(Question.position).all()
+    
+    # Get all responses
+    responses = db.query(Response).filter(Response.form_id == form_id).order_by(Response.submitted_at.desc()).all()
+    
+    output = io.StringIO()
+    writer = csv.writer(output, quoting=csv.QUOTE_MINIMAL)
+    
+    # Header row
+    headers = ["Submission ID", "Submitted At"] + [q.title for q in questions]
+    writer.writerow(headers)
+    
+    # Data rows
+    for res in responses:
+        answers_map = {ans.question_id: ans.value for ans in res.answers}
+        row = [
+            res.id,
+            res.submitted_at.strftime('%Y-%m-%d %H:%M:%S') if res.submitted_at else ""
+        ]
+        for q in questions:
+            row.append(answers_map.get(q.id, ""))
+        writer.writerow(row)
+        
+    csv_data = output.getvalue()
+    output.close()
+    return csv_data

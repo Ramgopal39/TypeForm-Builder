@@ -137,3 +137,10 @@ export const getFormResponses = async (formId: number): Promise<FormResponseItem
   const response = await api.get<FormResponseItem[]>(`/forms/${formId}/responses`);
   return response.data;
 };
+
+export const exportResponsesCSV = async (formId: number): Promise<Blob> => {
+  const response = await api.get(`/forms/${formId}/responses/csv`, {
+    responseType: 'blob',
+  });
+  return response.data;
+};
